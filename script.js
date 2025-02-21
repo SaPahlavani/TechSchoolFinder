@@ -26,7 +26,7 @@ function addMarkers() {
     markers = [];
 
     schools.forEach(school => {
-        var iconUrl = school.gender === "پسرانه" ? "images/boy.png" : "images/girl.png";
+        var iconUrl = school.gender === "پسرانه" ? "image/boy.png" : "image/girl.png";
 
         var marker = L.marker([school.lat, school.lon], {
             icon: L.icon({ iconUrl: iconUrl, iconSize: [32, 32] })
