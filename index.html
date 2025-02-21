@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هنرستان‌یاب خراسان رضوی</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>🎓 هنرستان‌یاب خراسان رضوی</h1>
+        <nav>
+            <ul>
+                <li><a href="#">🏫 نقشه هنرستان‌ها</a></li>
+                <li><a href="#">📖 راهنما</a></li>
+                <li><a href="#">ℹ️ درباره ما</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="map"></div>
+
+    <div class="filter-container">
+        <input type="text" id="searchName" placeholder="🔍 نام هنرستان" oninput="showSuggestions()">
+        <div id="suggestions"></div>
+        <input type="text" id="searchAddress" placeholder="📍 آدرس هنرستان">
+        <select id="gender">
+            <option value="all">همه جنسیت‌ها</option>
+            <option value="پسرانه">پسرانه</option>
+            <option value="دخترانه">دخترانه</option>
+        </select>
+        <select id="field">
+            <option value="all">همه رشته‌ها</option>
+            <option value="کامپیوتر">کامپیوتر</option>
+            <option value="برق">برق</option>
+            <option value="معماری">معماری</option>
+            <option value="مکانیک">مکانیک</option>
+            <option value="حسابداری">حسابداری</option>
+            <option value="گرافیک">گرافیک</option>
+            <option value="الکترونیک">الکترونیک</option>
+            <option value="مدیریت">مدیریت</option>
+            <option value="نقشه‌کشی">نقشه‌کشی</option>
+            <option value="صنایع غذایی">صنایع غذایی</option>
+            <option value="تربیت بدنی">تربیت بدنی</option>
+        </select>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
