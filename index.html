@@ -24,15 +24,15 @@
     <div id="map"></div>
 
     <div class="filter-container">
-        <input type="text" id="searchName" placeholder="🔍 نام هنرستان" oninput="showSuggestions()">
+        <input type="text" id="searchName" placeholder="🔍 نام هنرستان" oninput="filterSchools()">
         <div id="suggestions"></div>
-        <input type="text" id="searchAddress" placeholder="📍 آدرس هنرستان">
-        <select id="gender">
+        <input type="text" id="searchAddress" placeholder="📍 آدرس هنرستان" oninput="filterSchools()">
+        <select id="gender" onchange="filterSchools()">
             <option value="all">همه جنسیت‌ها</option>
             <option value="پسرانه">پسرانه</option>
             <option value="دخترانه">دخترانه</option>
         </select>
-        <select id="field">
+        <select id="field" onchange="filterSchools()">
             <option value="all">همه رشته‌ها</option>
             <option value="کامپیوتر">کامپیوتر</option>
             <option value="برق">برق</option>
