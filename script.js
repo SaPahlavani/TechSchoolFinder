@@ -5,28 +5,68 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var schools = [];
+var markers = [];
 var fields = ["کامپیوتر", "برق", "معماری", "مکانیک", "حسابداری", "گرافیک", "الکترونیک", "مدیریت", "نقشه‌کشی", "صنایع غذایی", "تربیت بدنی"];
 var genders = ["پسرانه", "دخترانه"];
 
-for (var i = 0; i < 50; i++) {
-    schools.push({
-        name: "هنرستان شماره " + (i + 1),
-        lat: 36.2 + Math.random() * 0.2,
-        lon: 59.5 + Math.random() * 0.2,
-        gender: genders[Math.floor(Math.random() * genders.length)],
-        field: fields[Math.floor(Math.random() * fields.length)],
-        students: Math.floor(Math.random() * 200) + 50,
-        address: "خیابان " + (10 + i) + "، مشهد"
+function loadSchools(fileType) {
+    fetch(`schools.${fileType}`)
+        .then(response => {
+            if (fileType === "json") {
+                return response.json();
+            } else if (fileType === "csv") {
+                return response.text();
+            } else if (fileType === "xml") {
+                return response.text();
+            }
+        })
+        .then(data => {
+            if (fileType === "json") {
+                schools = data;
+            } else if (fileType === "csv") {
+                parseCSV(data);
+            } else if (fileType === "xml") {
+                parseXML(data);
+            }
+            addMarkers();
+        })
+        .catch(error => console.error("خطا در بارگذاری داده‌ها:", error));
+}
+
+function parseCSV(csvData) {
+    let rows = csvData.split("\n").map(row => row.split(","));
+    let headers = rows.shift();
+    schools = rows.map(row => {
+        let obj = {};
+        headers.forEach((header, i) => obj[header.trim()] = row[i].trim());
+        obj.lat = parseFloat(obj.lat);
+        obj.lon = parseFloat(obj.lon);
+        obj.students = parseInt(obj.students);
+        return obj;
     });
 }
 
-var markers = [];
+function parseXML(xmlString) {
+    let parser = new DOMParser();
+    let xmlDoc = parser.parseFromString(xmlString, "text/xml");
+    let schoolNodes = xmlDoc.getElementsByTagName("school");
+    schools = Array.from(schoolNodes).map(school => ({
+        name: school.getElementsByTagName("name")[0].textContent,
+        lat: parseFloat(school.getElementsByTagName("lat")[0].textContent),
+        lon: parseFloat(school.getElementsByTagName("lon")[0].textContent),
+        gender: school.getElementsByTagName("gender")[0].textContent,
+        field: school.getElementsByTagName("field")[0].textContent,
+        students: parseInt(school.getElementsByTagName("students")[0].textContent),
+        address: school.getElementsByTagName("address")[0].textContent
+    }));
+}
+
 function addMarkers() {
     markers.forEach(marker => map.removeLayer(marker));
     markers = [];
 
     schools.forEach(school => {
-        var iconUrl = school.gender === "پسرانه" ? "image/boy.png" : "image/girl.png";
+        var iconUrl = school.gender === "پسرانه" ? "images/boy.png" : "images/girl.png";
 
         var marker = L.marker([school.lat, school.lon], {
             icon: L.icon({ iconUrl: iconUrl, iconSize: [32, 32] })
@@ -36,43 +76,18 @@ function addMarkers() {
         markers.push(marker);
     });
 }
-addMarkers();
-
-function showSuggestions() {
-    var input = document.getElementById("searchName").value.toLowerCase();
-    var suggestionsDiv = document.getElementById("suggestions");
-
-    if (input === "") {
-        suggestionsDiv.style.display = "none";
-        return;
-    }
-
-    var suggestions = schools.filter(s => s.name.toLowerCase().includes(input));
-    suggestionsDiv.innerHTML = "";
-    suggestions.forEach(school => {
-        var div = document.createElement("div");
-        div.innerHTML = school.name;
-        div.onclick = function() {
-            document.getElementById("searchName").value = school.name;
-            filterSchools();
-            suggestionsDiv.style.display = "none";
-        };
-        suggestionsDiv.appendChild(div);
-    });
-
-    suggestionsDiv.style.display = suggestions.length ? "block" : "none";
-}
 
 document.querySelectorAll("input, select").forEach(element => {
     element.addEventListener("input", filterSchools);
 });
+
 function filterSchools() {
     var nameFilter = document.getElementById("searchName").value.toLowerCase();
     var addressFilter = document.getElementById("searchAddress").value.toLowerCase();
     var genderFilter = document.getElementById("gender").value;
     var fieldFilter = document.getElementById("field").value;
 
-    markers.forEach(marker => map.removeLayer(marker)); 
+    markers.forEach(marker => map.removeLayer(marker));
     markers = [];
 
     schools.forEach(school => {
@@ -93,3 +108,6 @@ function filterSchools() {
         }
     });
 }
+
+// مقداردهی اولیه با فایل JSON (می‌توانید CSV یا XML را انتخاب کنید)
+loadSchools("json");
