@@ -1,4 +1,6 @@
-var map = L.map('map').setView([36.2978, 59.6057], 11);
+var map = L.map('map', {
+    attributionControl: false  // غیرفعال کردن آرم Leaflet
+}).setView([36.2978, 59.6057], 11);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
