@@ -22,7 +22,7 @@ function loadSchools(fileType) {
         })
         .then(data => {
             if (fileType === "json") {
-                schools = data;
+                schools = data; // اگر JSON باشد، داده‌ها را به آرایه مدرسه‌ها تبدیل می‌کنیم.
             } else if (fileType === "csv") {
                 parseCSV(data);
             } else if (fileType === "xml") {
